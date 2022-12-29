@@ -1,5 +1,5 @@
-
 from abc import ABC, abstractmethod
+
 
 class BaseEncoderDecoder(ABC):
     @abstractmethod
@@ -17,4 +17,3 @@ class BaseEncoderDecoder(ABC):
     @abstractmethod
     def decode_status(self, binary_data):
         pass
-
