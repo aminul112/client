@@ -3,7 +3,7 @@ import logging
 from base_enc_dec import BaseEncoderDecoder
 import messages_pb2 as messages
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("client_log")
 
 
 class ProtobufEncoderDecoder(BaseEncoderDecoder):
@@ -17,6 +17,7 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
             proto_message.client_port = int(msg_dict.get("client_port"))
             return proto_message.SerializeToString()  # serialize
         except TypeError as e:
+            log.error(f"encode_heartbeat exception happened")
             proto_message = messages.ErrorMessage()
             proto_message.type = "error"
             proto_message.error = str(e)
@@ -25,7 +26,6 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
     def decode_heartbeat(self, binary_data):
         proto_message = messages.HeartBeatMessage()
         deserialized = proto_message.FromString(binary_data)  # deserialize, input will be bytes
-        log.info(f"Deserialized = {deserialized}")
         if deserialized.type =="heartbeat":
             return {
                 "type": deserialized.type,
@@ -35,6 +35,7 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
                 "client_port": deserialized.client_port,
             }
         else:
+            log.error(f"decode_heartbeat exception happened")
             return {
                 "type": "error",
                 "msg": "incorrect decoder"
@@ -48,6 +49,7 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
             proto_message.message_count = int(msg_dict.get("message_count"))
             return proto_message.SerializeToString()  # serialize
         except TypeError as e:
+            log.error(f"encode_status exception happened")
             proto_message = messages.ErrorMessage()
             proto_message.type = "error"
             proto_message.error = str(e)
@@ -56,7 +58,6 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
     def decode_status(self, binary_data):
         proto_message = messages.StatusMessage()
         deserialized = proto_message.FromString(binary_data)  # deserialize, input will be bytes
-        log.info(f"Deserialized = {deserialized}")
         if deserialized.type == "status":
             return {
                 "type": deserialized.type,
@@ -64,6 +65,7 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
                 "identifier": deserialized.identifier,
             }
         else:
+            log.error(f"decode_status exception happened")
             return {
                 "type": "error",
                 "msg": "incorrect decoder"

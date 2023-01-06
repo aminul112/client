@@ -14,10 +14,11 @@ log = logging.getLogger("client_log")
 
 async def main():
     server_ip = os.getenv("SERVER_IP")
-    server_port = os.getenv("SERVER_PORT")
+    server_port = int(os.getenv("SERVER_PORT"))
     client_ip = os.getenv("CLIENT_IP")
-    client_port = os.getenv("CLIENT_PORT")
-    client_identifier = os.getenv("CLIENT_IDENTIFIER")
+    client_port = int(os.getenv("CLIENT_PORT"))
+    client_identifier = int(os.getenv("CLIENT_IDENTIFIER"))
+    heartbeat_interval = int(os.getenv("HEARTBEAT_INTERVAL_SECONDS", 60))
 
     if not (server_ip and server_port and client_ip and client_port and client_identifier):
         log.error(".env file must have valid SERVER_IP, SERVER_PORT, CLIENT_IP, CLIENT_PORT and CLIENT_IDENTIFIER  "
@@ -27,6 +28,7 @@ async def main():
     log.info(f"server ip is {server_ip} server port is {server_port}")
     log.info(f"client ip is {client_ip} client port is {client_port}")
     log.info(f"client_identifier  is {client_identifier}")
+    log.info(f"heartbeat_interval  is {heartbeat_interval}")
 
     encoder_decoder = EncodeDecodeExecutor(ProtobufEncoderDecoder())
     client = Client(encoder_decoder=encoder_decoder, client_identifier=client_identifier, client_port=client_port)
@@ -47,7 +49,7 @@ async def main():
     f2 = asyncio.ensure_future(client.accept_client(client_port=client_port))
     await f2
     t2 = asyncio.ensure_future(
-        client.send_heartbeat_message(5, client.heartbeat, server_ip, server_port, client_identifier))
+        client.send_heartbeat_message(heartbeat_interval, client.heartbeat, server_ip, server_port, client_identifier))
     await t2
     loop.run_forever()
 

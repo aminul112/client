@@ -25,12 +25,10 @@ class Client:
             raise Exception("socket closed")
 
         if data is None:
-            log.warning("Expected WORLD, received None")
+            log.warning("Expected some data, received None")
             return
 
         deserialized_dict = self.encoder_decoder.decode_status(binary_data=data)
-
-        log.info(f"deserialized_dict is {deserialized_dict}")
 
         status_msg = {"type": "status",
                       "message_count": heartbeat_count,
@@ -38,12 +36,12 @@ class Client:
                       }
 
         serialized_status = self.encoder_decoder.encode_status(msg_dict=status_msg)
-        log.info(f"Serialized Status message sending to Server {serialized_status}")
+        log.info("Serialized Status message sending to Server ")
         client_writer.write(serialized_status)
         await client_writer.drain()
 
-    async def handle_client(self, server_ip: str, port: int, msg: dict):
-        await self.send_a_message_to_server(server_ip=server_ip, port=port, msg=msg)
+    async def handle_client(self, server_ip: str, server_port: int, msg: dict):
+        await self.send_a_message_to_server(server_ip=server_ip, server_port=server_port, msg=msg)
 
     async def send_heartbeat_message(self, interval: int, func, *args, **kwargs):
         """Run func every interval seconds."""
@@ -53,12 +51,12 @@ class Client:
                 asyncio.sleep(interval),
             )
 
-    async def send_a_message_to_server(self, server_ip: str, port: int, msg: dict):
+    async def send_a_message_to_server(self, server_ip: str, server_port: int, msg: dict):
         try:
 
             client_reader, client_writer = await asyncio.open_connection(server_ip,
-                                                                         port)
-            log.info(f"Client connected sending first data {msg}")
+                                                                         server_port)
+            log.info(f"Client connected sending first data")
 
             serialized_bnr = self.encoder_decoder.encode_heartbeat(msg_dict=msg)
 
@@ -72,16 +70,14 @@ class Client:
                 raise Exception("socket closed")
 
             deserialized_obj = self.encoder_decoder.decode_heartbeat(binary_data=data)
-            log.info(f"deserialized data is is {deserialized_obj}")
+            log.info(f"deserialized data from is is {deserialized_obj}")
 
-            log.info(f"Disconnecting from {server_ip}{port}")
             client_writer.close()
-            log.info(f"Disconnected from {server_ip}{port}")
         except (ConnectionError, OSError) as e:
             log.error(f"Connection error while sending heartbeat{e}")
 
-    async def heartbeat(self, server_ip: str, port: int, client_identifier: int):
-        log.info(f"heartbeat: {server_ip}:{port}")
+    async def heartbeat(self, server_ip: str, server_port: int, client_identifier: int):
+        log.info(f"heartbeat: {server_ip}:{server_port}")
         msg = {"type": "heartbeat",
                "msg": "I’m here!",
                "identifier": client_identifier,
@@ -90,4 +86,4 @@ class Client:
                }
         global heartbeat_count
         heartbeat_count = heartbeat_count + 1
-        await self.send_a_message_to_server(server_ip=server_ip, port=port, msg=msg)
+        await self.send_a_message_to_server(server_ip=server_ip, server_port=server_port, msg=msg)
