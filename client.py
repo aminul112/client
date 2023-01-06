@@ -22,13 +22,11 @@ class Client:
 
         data = await client_reader.read(1024)
         if not data:
-            raise Exception("socket closed")
-
-        if data is None:
-            log.warning("Expected some data, received None")
-            return
+            log.error("socket closed: could not read server request")
+            raise Exception("socket closed: could not read server request")
 
         deserialized_dict = self.encoder_decoder.decode_status(binary_data=data)
+        log.info(f"received a request from server: {deserialized_dict}")
 
         status_msg = {"type": "status",
                       "message_count": heartbeat_count,
@@ -36,7 +34,7 @@ class Client:
                       }
 
         serialized_status = self.encoder_decoder.encode_status(msg_dict=status_msg)
-        log.info("Serialized Status message sending to Server ")
+        log.info("Serialized Status message count sending to Server ")
         client_writer.write(serialized_status)
         await client_writer.drain()
 
@@ -67,17 +65,18 @@ class Client:
 
             data = await client_reader.read(1024)
             if not data:
-                raise Exception("socket closed")
+                log.error("socket closed: server did not reply")
+                raise Exception("socket closed: server did not reply")
 
             deserialized_obj = self.encoder_decoder.decode_heartbeat(binary_data=data)
-            log.info(f"deserialized data from is is {deserialized_obj}")
+            log.info(f"deserialized heartbeat reply data from server is {deserialized_obj}")
 
             client_writer.close()
         except (ConnectionError, OSError) as e:
             log.error(f"Connection error while sending heartbeat{e}")
 
     async def heartbeat(self, server_ip: str, server_port: int, client_identifier: int):
-        log.info(f"heartbeat: {server_ip}:{server_port}")
+        log.info(f"sending heartbeat to: {server_ip}:{server_port}")
         msg = {"type": "heartbeat",
                "msg": "I’m here!",
                "identifier": client_identifier,
