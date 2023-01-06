@@ -25,8 +25,10 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
 
     def decode_heartbeat(self, binary_data):
         proto_message = messages.HeartBeatMessage()
-        deserialized = proto_message.FromString(binary_data)  # deserialize, input will be bytes
-        if deserialized.type =="heartbeat":
+        deserialized = proto_message.FromString(
+            binary_data
+        )  # deserialize, input will be bytes
+        if deserialized.type == "heartbeat":
             return {
                 "type": deserialized.type,
                 "msg": deserialized.msg,
@@ -36,10 +38,7 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
             }
         else:
             log.error(f"decode_heartbeat exception happened")
-            return {
-                "type": "error",
-                "msg": "incorrect decoder"
-            }
+            return {"type": "error", "msg": "incorrect decoder"}
 
     def encode_status(self, msg_dict):
         try:
@@ -57,7 +56,9 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
 
     def decode_status(self, binary_data):
         proto_message = messages.StatusMessage()
-        deserialized = proto_message.FromString(binary_data)  # deserialize, input will be bytes
+        deserialized = proto_message.FromString(
+            binary_data
+        )  # deserialize, input will be bytes
         if deserialized.type == "status":
             return {
                 "type": deserialized.type,
@@ -66,7 +67,4 @@ class ProtobufEncoderDecoder(BaseEncoderDecoder):
             }
         else:
             log.error(f"decode_status exception happened")
-            return {
-                "type": "error",
-                "msg": "incorrect decoder"
-            }
+            return {"type": "error", "msg": "incorrect decoder"}

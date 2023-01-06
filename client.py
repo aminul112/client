@@ -8,17 +8,28 @@ heartbeat_count = 0
 
 
 class Client:
-    def __init__(self, encoder_decoder: EncodeDecodeExecutor, client_identifier: int, client_port: int):
+    def __init__(
+        self,
+        encoder_decoder: EncodeDecodeExecutor,
+        client_identifier: int,
+        client_port: int,
+    ):
         self.encoder_decoder = encoder_decoder
         self.client_identifier = client_identifier
         self.client_port = client_port
 
     async def accept_client(self, client_port: int):
         log.info(f"accept_client: serving as client {client_port}")
-        await asyncio.start_server(self.handle_server_request, '0.0.0.0', client_port, )
+        await asyncio.start_server(
+            self.handle_server_request,
+            "0.0.0.0",
+            client_port,
+        )
 
-    async def handle_server_request(self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter):
-        log.info("handle_server_request: serving as client")
+    async def handle_server_request(
+        self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter
+    ):
+        log.info("handle_server_request: serving as a SERVER:")
 
         data = await client_reader.read(1024)
         if not data:
@@ -28,10 +39,11 @@ class Client:
         deserialized_dict = self.encoder_decoder.decode_status(binary_data=data)
         log.info(f"received a request from server: {deserialized_dict}")
 
-        status_msg = {"type": "status",
-                      "message_count": heartbeat_count,
-                      "identifier": self.client_identifier
-                      }
+        status_msg = {
+            "type": "status",
+            "message_count": heartbeat_count,
+            "identifier": self.client_identifier,
+        }
 
         serialized_status = self.encoder_decoder.encode_status(msg_dict=status_msg)
         log.info("Serialized Status message count sending to Server ")
@@ -39,7 +51,9 @@ class Client:
         await client_writer.drain()
 
     async def handle_client(self, server_ip: str, server_port: int, msg: dict):
-        await self.send_a_message_to_server(server_ip=server_ip, server_port=server_port, msg=msg)
+        await self.send_a_message_to_server(
+            server_ip=server_ip, server_port=server_port, msg=msg
+        )
 
     async def send_heartbeat_message(self, interval: int, func, *args, **kwargs):
         """Run func every interval seconds."""
@@ -49,11 +63,14 @@ class Client:
                 asyncio.sleep(interval),
             )
 
-    async def send_a_message_to_server(self, server_ip: str, server_port: int, msg: dict):
+    async def send_a_message_to_server(
+        self, server_ip: str, server_port: int, msg: dict
+    ):
         try:
 
-            client_reader, client_writer = await asyncio.open_connection(server_ip,
-                                                                         server_port)
+            client_reader, client_writer = await asyncio.open_connection(
+                server_ip, server_port
+            )
             log.info(f"Client connected sending first data")
 
             serialized_bnr = self.encoder_decoder.encode_heartbeat(msg_dict=msg)
@@ -69,7 +86,9 @@ class Client:
                 raise Exception("socket closed: server did not reply")
 
             deserialized_obj = self.encoder_decoder.decode_heartbeat(binary_data=data)
-            log.info(f"deserialized heartbeat reply data from server is {deserialized_obj}")
+            log.info(
+                f"deserialized heartbeat reply data from server is {deserialized_obj}"
+            )
 
             client_writer.close()
         except (ConnectionError, OSError) as e:
@@ -77,12 +96,15 @@ class Client:
 
     async def heartbeat(self, server_ip: str, server_port: int, client_identifier: int):
         log.info(f"sending heartbeat to: {server_ip}:{server_port}")
-        msg = {"type": "heartbeat",
-               "msg": "I’m here!",
-               "identifier": client_identifier,
-               "client_host": server_ip,
-               "client_port": self.client_port
-               }
+        msg = {
+            "type": "heartbeat",
+            "msg": "I’m here!",
+            "identifier": client_identifier,
+            "client_host": server_ip,
+            "client_port": self.client_port,
+        }
         global heartbeat_count
         heartbeat_count = heartbeat_count + 1
-        await self.send_a_message_to_server(server_ip=server_ip, server_port=server_port, msg=msg)
+        await self.send_a_message_to_server(
+            server_ip=server_ip, server_port=server_port, msg=msg
+        )
