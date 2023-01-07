@@ -33,11 +33,7 @@ Start the image:
 
     docker-compose up
 
-
-You can also start the image as a daemon:
-
-    docker-compose up -d
-
+You can see logs in the console. Log is also saved in the log directory.
 
 
 
