@@ -1,17 +1,40 @@
+# Client Async project
 
-Make sure poetry is installed properly in your build system.
 
-Make Python virtual environment inside project directory
-poetry config virtualenvs.in-project true
+## Setup
 
-Install all modules locally
-poetry install
+### Poetry
 
-Activate Python virtual environment
-source .venv/bin/activate 
+Make Python virtual environment inside project directory:
 
-Build docker container
-docker-compose build 
+    poetry config virtualenvs.in-project true
 
-Run Docker container
-docker-compose up
+Install dependencies:
+
+    poetry install
+
+#### Activate the virtual environment
+
+    source .venv/bin/activate
+
+
+## Building
+Make sure Docker is installed and running
+
+### Build docker
+    
+    docker-compose build 
+
+
+## Running
+
+### Run docker
+Start the image:
+
+    docker-compose up
+
+
+You can also start the image as a daemon:
+
+    docker-compose up -d
+
