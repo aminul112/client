@@ -50,6 +50,18 @@ class Client:
         client_writer.write(serialized_status)
         await client_writer.drain()
 
+        # wait for ACK message
+        data = await client_reader.read(1024)
+
+        if data is None:
+            log.error("socket closed: could not read ACK from server")
+            raise Exception("socket closed: could not read ACK from server")
+
+        deserialized_dict = self.encoder_decoder.decode_heartbeat(binary_data=data)
+        log.info(f"received ACK message is {deserialized_dict}")
+
+        await client_writer.drain()
+
     async def handle_client(self, server_ip: str, server_port: int, msg: dict):
         await self.send_a_message_to_server(
             server_ip=server_ip, server_port=server_port, msg=msg
@@ -71,11 +83,10 @@ class Client:
             client_reader, client_writer = await asyncio.open_connection(
                 server_ip, server_port
             )
-            log.info(f"Client connected sending first data")
 
             serialized_bnr = self.encoder_decoder.encode_heartbeat(msg_dict=msg)
 
-            log.info(f"Client connected sending first data {serialized_bnr}")
+            log.info(f"Client connected sending data {msg}")
 
             client_writer.write(serialized_bnr)
             await client_writer.drain()
