@@ -38,3 +38,13 @@ You can also start the image as a daemon:
 
     docker-compose up -d
 
+
+
+
+## Running Multiple Clients in the same machine
+
+1. Copy source code to another directory.
+2. Change CLIENT_PORT and CLIENT_IDENTIFIER values to different values for a separate client example: 6000 and 5678
+3. in docker-compose.yml file, change "client:" to something else like "second_client:"
+4. in docker-compose.yml file under ports section, 6000:6000
+5. Follow the build steps above and you can run as many clients as you want with new port and identifier.
