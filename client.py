@@ -3,7 +3,7 @@ import logging
 
 from encode_decode_executor import EncodeDecodeExecutor
 
-log = logging.getLogger("client_log")
+log = logging.getLogger('__main__.' + __name__)
 heartbeat_count = 0
 
 

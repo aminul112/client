@@ -9,7 +9,7 @@ import os
 
 load_dotenv()
 
-log = logging.getLogger("client_log")
+log = logging.getLogger()
 
 
 async def main():
