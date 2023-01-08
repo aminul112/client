@@ -24,11 +24,11 @@ class Client:
         self.server_port = server_port
         self.heartbeat_count = 0
 
-    async def accept_client(self) -> None:
+    async def start_server(self) -> None:
         """
         This method starts a server to handle status message request from the server.
         """
-        log.info(f"accept_client: a server with port {self.client_port}")
+        log.info(f"start_server: starting a server with port {self.client_port}")
         await asyncio.start_server(
             self.handle_server_request,
             self.client_ip,
@@ -39,7 +39,7 @@ class Client:
         self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter
     ) -> None:
         """
-        This is callback function for accept_client()->start_server() function of asyncio.
+        This is callback function for start_server() function of asyncio.
         :param client_reader: StreamReader object to read data from client.
         :param client_writer: StreamWriter object to write data to client.
         """

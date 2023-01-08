@@ -50,7 +50,8 @@ async def main():
     except Exception as ex:
         log.error(f"Main function exception happened {ex}")
 
-    f2 = asyncio.ensure_future(client.accept_client())
+    # starts a server inside the client to listen a request from the server
+    f2 = asyncio.ensure_future(client.start_server())
     await f2
     t2 = asyncio.ensure_future(
         client.send_heartbeat_message(
