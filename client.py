@@ -84,9 +84,10 @@ class Client:
         :param msg: the message to send
         """
 
-        await self.send_a_message_to_server(
+        reply_from_server = await self.send_a_message_to_server(
             server_ip=server_ip, server_port=server_port, msg=msg
         )
+        log.info(reply_from_server)
 
     async def send_heartbeat_message(self, interval: int, func, *args, **kwargs):
         """
@@ -135,8 +136,10 @@ class Client:
             )
 
             client_writer.close()
+            return deserialized_obj
         except (ConnectionError, OSError) as e:
             log.error(f"Connection error while sending heartbeat{e}")
+            return {}
 
     async def send_heartbeat(self) -> None:
         """
@@ -153,6 +156,7 @@ class Client:
         }
 
         self.heartbeat_count = self.heartbeat_count + 1
-        await self.send_a_message_to_server(
+        reply_from_server = await self.send_a_message_to_server(
             server_ip=self.server_ip, server_port=self.server_port, msg=msg
         )
+        log.info(reply_from_server)

@@ -49,3 +49,19 @@ You can see logs in the console. Log is also saved in the log directory.
 3. in docker-compose.yml file, change "client:" to something else like "second_client:"
 4. in docker-compose.yml file under ports section, 6000:6000
 5. Follow the build steps above and you can run as many clients as you want with new port and identifier.
+
+
+
+
+
+
+### SPECIAL CASE: How to run test_integration.py
+##Note: You need 'server' project running in your Mac ( not in docker) for this test.
+1. Go to 'server' project.
+2. activate virtual environment.
+3. Build server with 'docker-compose build' command
+4. Run docker container in daemon mode 'docker-compose up -d'
+5. Then run 'python ./main.py'
+6. This will be running a server to receive integration call.
+7. Then you can run test_integration.py from command line or from PyCharm
+8. Then you will see it passing.
