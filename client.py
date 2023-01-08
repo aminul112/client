@@ -3,18 +3,18 @@ import logging
 
 from encode_decode_executor import EncodeDecodeExecutor
 
-log = logging.getLogger('__main__.' + __name__)
+log = logging.getLogger("__main__." + __name__)
 
 
 class Client:
     def __init__(
-            self,
-            encoder_decoder: EncodeDecodeExecutor,
-            client_identifier: int,
-            client_port: int,
-            client_ip: str,
-            server_ip: str,
-            server_port: int,
+        self,
+        encoder_decoder: EncodeDecodeExecutor,
+        client_identifier: int,
+        client_port: int,
+        client_ip: str,
+        server_ip: str,
+        server_port: int,
     ):
         self.encoder_decoder = encoder_decoder
         self.client_identifier = client_identifier
@@ -36,7 +36,7 @@ class Client:
         )
 
     async def handle_server_request(
-            self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter
+        self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter
     ) -> None:
         """
         This is callback function for accept_client()->start_server() function of asyncio.
@@ -102,7 +102,7 @@ class Client:
             )
 
     async def send_a_message_to_server(
-            self, server_ip: str, server_port: int, msg: dict
+        self, server_ip: str, server_port: int, msg: dict
     ):
         """
         Serves message sending to the server.
