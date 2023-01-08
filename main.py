@@ -30,6 +30,9 @@ async def main():
         encoder_decoder=encoder_decoder,
         client_identifier=client_identifier,
         client_port=client_port,
+        client_ip=client_ip,
+        server_ip=server_ip,
+        server_port=server_port,
     )
 
     log.info(f"MAIN begin: {server_ip} {server_port} {client_port} {client_identifier}")
@@ -43,19 +46,16 @@ async def main():
             "identifier": client_identifier,
         }
 
-        await client.handle_client(server_ip, server_port, msg)
+        await client.send_to_server(server_ip, server_port, msg)
     except Exception as ex:
         log.error(f"Main function exception happened {ex}")
 
-    f2 = asyncio.ensure_future(client.accept_client(client_port=client_port))
+    f2 = asyncio.ensure_future(client.accept_client())
     await f2
     t2 = asyncio.ensure_future(
         client.send_heartbeat_message(
             heartbeat_interval,
-            client.heartbeat,
-            server_ip,
-            server_port,
-            client_identifier,
+            client.send_heartbeat,
         )
     )
     await t2
