@@ -13,21 +13,12 @@ log = logging.getLogger()
 
 
 async def main():
-    server_ip = os.getenv("SERVER_IP")
-    server_port = int(os.getenv("SERVER_PORT"))
-    client_ip = os.getenv("CLIENT_IP")
-    client_port = int(os.getenv("CLIENT_PORT"))
-    client_identifier = int(os.getenv("CLIENT_IDENTIFIER"))
+    server_ip = os.getenv("SERVER_IP", "0.0.0.0")
+    server_port = int(os.getenv("SERVER_PORT", 4000))
+    client_ip = os.getenv("CLIENT_IP", "0.0.0.0")
+    client_port = int(os.getenv("CLIENT_PORT", 3000))
+    client_identifier = int(os.getenv("CLIENT_IDENTIFIER", 1234))
     heartbeat_interval = int(os.getenv("HEARTBEAT_INTERVAL_SECONDS", 60))
-
-    if not (
-        server_ip and server_port and client_ip and client_port and client_identifier
-    ):
-        log.error(
-            ".env file must have valid SERVER_IP, SERVER_PORT, CLIENT_IP, CLIENT_PORT and CLIENT_IDENTIFIER  "
-            "defined"
-        )
-        return
 
     log.info(f"server ip is {server_ip} server port is {server_port}")
     log.info(f"client ip is {client_ip} client port is {client_port}")

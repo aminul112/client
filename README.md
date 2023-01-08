@@ -1,5 +1,10 @@
 # Client Async project
 
+Building instruction for macOS. In Linux, it should be very similar.
+If you want to modify ip or port or anything feel free to change .env file. If you do not have
+any values defined in .env file, there will be some default values in the main.py file.
+
+** Note: you should update docker-compose.yml file accordingly. 
 
 ## Setup
 
