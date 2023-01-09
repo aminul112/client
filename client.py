@@ -104,12 +104,13 @@ class Client:
 
     async def send_a_message_to_server(
         self, server_ip: str, server_port: int, msg: dict
-    ):
+    ) -> dict:
         """
         Serves message sending to the server.
         :param server_ip: server ip address
         :param server_port: server port number
         :param msg: the message to send
+        :return: return the message what server send a reply to the client. In failure return empty dictionary.
         """
 
         try:
