@@ -59,9 +59,9 @@ You can see logs in the console. Log is also saved in the log directory.
 ##Note: You need 'server' project running in your Mac ( not in docker) for this test.
 1. Go to 'server' project.
 2. activate virtual environment.
-3. Build server with 'docker-compose build' command
+3. Build 'server' project with 'docker-compose build' command
 4. Run docker container in daemon mode 'docker-compose up -d'
-5. Then run 'python ./main.py'
+5. In 'server' project run 'python ./main.py'
 6. This will be running a server to receive integration call.
 7. Then you can run test_integration.py from command line or from PyCharm
 8. Then you will see it passing.

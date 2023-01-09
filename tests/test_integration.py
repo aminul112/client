@@ -4,6 +4,7 @@ from unittest import TestCase
 from client import Client
 from encode_decode_executor import EncodeDecodeExecutor
 from protobuf_encode_decoder import ProtobufEncoderDecoder
+import messages_pb2 as messages
 
 
 class TestClientIntegration(TestCase):
@@ -23,7 +24,7 @@ class TestClientIntegration(TestCase):
             server_port=server_port,
         )
         msg = {
-            "type": "heartbeat",
+            "type": messages.MessageType.MESSAGE_TYPE_HEARTBEAT,
             "msg": "I’m here!",
             "identifier": client_identifier,
             "client_host": server_ip,
@@ -44,6 +45,6 @@ class TestClientIntegration(TestCase):
                 "client_port": 2222,
                 "identifier": 7777,
                 "msg": "ack",
-                "type": "heartbeat",
+                "type": messages.MessageType.MESSAGE_TYPE_HEARTBEAT,
             },
         )

@@ -1,6 +1,6 @@
 import asyncio
 import logging
-
+import messages_pb2 as messages
 from encode_decode_executor import EncodeDecodeExecutor
 
 log = logging.getLogger("__main__." + __name__)
@@ -54,7 +54,7 @@ class Client:
         log.info(f"received a request from server: {deserialized_dict}")
 
         status_msg = {
-            "type": "status",
+            "type": messages.MessageType.MESSAGE_TYPE_STATUS,
             "message_count": self.heartbeat_count,
             "identifier": self.client_identifier,
         }
@@ -148,7 +148,7 @@ class Client:
         """
         log.info(f"sending heartbeat to: {self.server_ip}:{self.server_port}")
         msg = {
-            "type": "heartbeat",
+            "type": messages.MessageType.MESSAGE_TYPE_HEARTBEAT,
             "msg": "I’m here!",
             "identifier": self.client_identifier,
             "client_host": self.server_ip,
